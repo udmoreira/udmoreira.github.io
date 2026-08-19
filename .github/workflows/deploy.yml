@@ -23,6 +23,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Remove black background from club logo
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          css = '<style>.brand img,.hero-logo img{-webkit-mask-image:url("logo.png");mask-image:url("logo.png");-webkit-mask-mode:luminance;mask-mode:luminance;}</style>'
+          s = s.replace('</head>', css + '</head>', 1)
+          p.write_text(s, encoding='utf-8')
+          PY
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload site
