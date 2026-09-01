@@ -20,11 +20,14 @@ jobs:
         run: |
           python3 - <<'PY'
           import os, re, json
-          body=os.environ["BODY"]
-          m=re.search(r'<!--UDM-DATA-START-->(.*?)<!--UDM-DATA-END-->', body, re.S)
-          if not m:
+          body=os.environ.get("BODY","")
+          start="<!--UDM-DATA-START-->"
+          end="<!--UDM-DATA-END-->"
+          if start not in body or end not in body:
               raise SystemExit("Dados do clube não encontrados.")
-          data=json.loads(m.group(1).strip())
+          raw=body.split(start,1)[1].split(end,1)[0]
+          raw=raw.replace("\\n","\n").strip()
+          data=json.loads(raw)
           with open("club-data.json","w",encoding="utf-8") as f:
               json.dump(data,f,ensure_ascii=False,indent=2)
           PY
