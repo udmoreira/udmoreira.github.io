@@ -1,0 +1,20 @@
+name: Corrigir link Sócios
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Atualizar links de Sócios
+        run: |
+          sed -i 's/href="#socios"/href="socios.html"/g' index.html
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet; then exit 0; fi
+          git add index.html
+          git commit -m "Ligar menu e botão à ficha de sócio"
+          git push
